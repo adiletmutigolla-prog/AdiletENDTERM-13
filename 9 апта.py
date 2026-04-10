@@ -1,15 +1,14 @@
 import pandas as pd
 
-enroll = pd.read_csv('enroll.csv')
-courses = pd.read_csv('courses.csv')
+class CourseIntersection:
+    def __init__(self, enroll_path, courses_path):
+        self.enroll = pd.read_csv(enroll_path)
+        self.courses = pd.read_csv(courses_path)
 
-merged_df = pd.merge(enroll, courses, on='course_code')
-result = merged_df.groupby('title')['student_id'].count().reset_index()
+    def get_intersection(self):
+        codes_enroll = set(self.enroll['course_code'].unique())
+        codes_courses = set(self.courses['course_code'].unique())
+        return list(codes_enroll & codes_courses)
 
-print(result)
-
-codes_enroll = enroll['course_code'].unique()
-codes_courses = courses['course_code'].unique()
-intersection = list(set(codes_enroll) & set(codes_courses))
-
-print(intersection)
+task9 = CourseIntersection('enroll.csv', 'courses.csv')
+print(task9.get_intersection())
