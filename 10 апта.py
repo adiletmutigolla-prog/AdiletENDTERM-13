@@ -1,12 +1,17 @@
 import pandas as pd
 
-enroll = pd.read_csv('enroll.csv')
-courses = pd.read_csv('courses.csv')
+class CourseManager:
+    def __init__(self, enroll_path, courses_path):
+        self.enroll = pd.read_csv(enroll_path)
+        self.courses = pd.read_csv(courses_path)
 
-courses_cleaned = courses.drop_duplicates(subset=['course_code']).sort_values('course_code')
+    def clean_courses(self):
+        self.courses = self.courses.drop_duplicates(subset=['course_code']).sort_values('course_code')
 
-merged_df = pd.merge(enroll, courses_cleaned, on='course_code')
-result = merged_df.groupby('title')['student_id'].count().reset_index()
+    def get_student_counts(self):
+        self.clean_courses()
+        merged_df = pd.merge(self.enroll, self.courses, on='course_code')
+        return merged_df.groupby('title')['student_id'].count().reset_index()
 
-print("Сұрыпталған және тазартылған анықтамалық бойынша нәтиже: ")
-print(result)
+task10 = CourseManager('enroll.csv', 'courses.csv')
+print(task10.get_student_counts())
